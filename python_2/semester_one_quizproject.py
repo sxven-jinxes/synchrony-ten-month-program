@@ -1,6 +1,7 @@
 #semester one project
 #basically a random trivia game.
 #may include riddles
+#functions are VERY VERY helpful lolz
 import random
 import time
 
