@@ -1,8 +1,17 @@
 #semester one project
 #basically a random trivia game.
 #may include riddles
+from typing import Final
 import random
 import time
+user_points = 0
+VALID_TRUE_INPUTS: Final = ("true", "t", "yes", "y")
+VALID_FALSE_INPUTS: Final = ("false", "no", "n", "f")
+TOTAL_QUESTIONS: Final = 10
+POINTS_PER_QUESTION: Final = 10
+def user_score(user_points):
+    percentage = (user_points/(TOTAL_QUESTIONS * POINTS_PER_QUESTION)) * 100
+    return percentage
 
 def typing_effect(text):
     for char in text:
@@ -10,7 +19,6 @@ def typing_effect(text):
         time.sleep(random.uniform(0.02, 0.15))
     print()
 
-user_points = 0
 question_bucket = [
     {"prompt": "It is physically impossible for pigs to look up at the sky.", "correct_ans": "true"}, 
     {"prompt": "When humans take a breath, they replace only 12 percent of the air in their lungs with fresh air.", "correct_ans": "false"}, 
@@ -43,7 +51,7 @@ question_bucket = [
     {"prompt": "Lightning can turn sand into glass.", "correct_ans": "true"},
     {"prompt": "The bee hummingbird, the smallest bird in the world, drinks nectar from up to 1,600 flowers a day.", "correct_ans": "false"}]
 
-game_questions = random.sample(question_bucket, 10)
+game_questions = random.sample(question_bucket, TOTAL_QUESTIONS)
 
 def welcome():
     typing_effect(" ")
@@ -83,25 +91,64 @@ while True:
         typing_effect(" ")
 
 for index, item in enumerate(game_questions,1):
-    current_question = random.choice(question_bucket)
-    question = current_question["prompt"]
-    correct_answer = current_question["correct_ans"]
-    user_answer = input(f"{question} (True/False): ").strip().lower()
+    question = item["prompt"]
+    correct_answer = item["correct_ans"]
+    typing_effect(f"Question {index} of {TOTAL_QUESTIONS}")
+    typing_effect(question)
+    while True:
+        user_answer = input(f"(True/False): ").strip().lower()
+        if user_answer in VALID_TRUE_INPUTS:
+            user_answer = "true"
+            break
+        elif user_answer in VALID_FALSE_INPUTS:
+            user_answer = "false"
+            break
+        else:
+            typing_effect(" ")
+            typing_effect("Invalid answer. Please enter true or false!!")
+            typing_effect(" ")
     if user_answer == correct_answer:
         typing_effect(" ")
         typing_effect("Yay! You got it right! +10 points")
         typing_effect(" ")
-        user_points += 10
-    else :
+        user_points += POINTS_PER_QUESTION
+    else:
         typing_effect(" ")
         typing_effect("Nope. Wrong answer!")
         typing_effect(" ")
-    question_bucket.remove(current_question)
+
 print("· · ─ ·✶· ─ · ·")
 typing_effect("   game over   ")
 print("· · ─ ·✶· ─ · ·")
 typing_effect(" ")
 typing_effect(" ")
 typing_effect("Your score was: ")
-print(user_points, "/ 100")
+print(user_points, "/", TOTAL_QUESTIONS * POINTS_PER_QUESTION)
+percentage = user_score(user_points)
+typing_effect(f"You got {percentage:.1f}%!")
 typing_effect(" ")
+#saves the user's score into a text file
+#"a" is for adding your previous scores into the text file
+try:
+    with open("previous_scores.txt", "a") as file:
+        file.write(f"Score: {user_points}/100\n")
+#OSError is short for "Operating System Error" and it's when you cannot
+#save your text files because something went wrong when Python tried to access it
+except OSError:
+    typing_effect("There was an error saving your score...")
+    typing_effect(":(")
+
+else:
+    typing_effect("Your score was saved successfully!!")
+
+finally:
+    typing_effect("Thank you for playing!!!")
+
+#shows previous scores :)
+try:
+    with open("previous_scores.txt", "r") as file:
+        print(file.read())
+
+except FileNotFoundError:
+    typing_effect("no previous scores found!!")
+    typing_effect("try again later :(")
