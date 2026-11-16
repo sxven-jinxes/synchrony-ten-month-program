@@ -9,8 +9,9 @@ VALID_TRUE_INPUTS: Final = ("true", "t", "yes", "y")
 VALID_FALSE_INPUTS: Final = ("false", "no", "n", "f")
 TOTAL_QUESTIONS: Final = 10
 POINTS_PER_QUESTION: Final = 10
+TOTAL_POINT_AMOUNT: Final = 100
 def user_score(user_points):
-    percentage = (user_points/(TOTAL_QUESTIONS * POINTS_PER_QUESTION)) * 100
+    percentage = (user_points/TOTAL_POINT_AMOUNT) * 100
     return percentage
 
 def typing_effect(text):
@@ -123,7 +124,7 @@ print("· · ─ ·✶· ─ · ·")
 typing_effect(" ")
 typing_effect(" ")
 typing_effect("Your score was: ")
-print(user_points, "/", TOTAL_QUESTIONS * POINTS_PER_QUESTION)
+print(user_points, "/", TOTAL_POINT_AMOUNT)
 percentage = user_score(user_points)
 typing_effect(f"You got {percentage:.1f}%!")
 typing_effect(" ")
@@ -131,7 +132,7 @@ typing_effect(" ")
 #"a" is for adding your previous scores into the text file
 try:
     with open("previous_scores.txt", "a") as file:
-        file.write(f"Score: {user_points}/100\n")
+        file.write(f"Score: {user_points}/{TOTAL_POINT_AMOUNT}\n")
 #OSError is short for "Operating System Error" and it's when you cannot
 #save your text files because something went wrong when Python tried to access it
 except OSError:
@@ -143,12 +144,22 @@ else:
 
 finally:
     typing_effect("Thank you for playing!!!")
+    typing_effect("Have a nice day/night!!")
 
 #shows previous scores :)
 try:
     with open("previous_scores.txt", "r") as file:
-        print(file.read())
+        previous_scores = print(file.read())
+
+        if previous_scores:
+            print(previous_scores)
+        else:
+            typing_effect("no previous scores were found!")
 
 except FileNotFoundError:
     typing_effect("no previous scores found!!")
     typing_effect("try again later :(")
+
+except OSError:
+    typing_effect("there was an error finding your score!")
+    typing_effect(":(")

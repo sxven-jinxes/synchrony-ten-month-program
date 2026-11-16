@@ -96,6 +96,7 @@ for index, item in enumerate(game_questions,1):
         typing_effect("Nope. Wrong answer!")
         typing_effect(" ")
     question_bucket.remove(current_question)
+
 print("· · ─ ·✶· ─ · ·")
 typing_effect("   game over   ")
 print("· · ─ ·✶· ─ · ·")

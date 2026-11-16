@@ -30,8 +30,9 @@ def typing_effect(text):
 
 def typewriter_effect(text, delay=0.06):
     for char in text:
-        typing_effect(char, end='', flush=True)
+        print(char, end='', flush=True)
         time.sleep(delay)
-    typing_effect()
+    print()
 typewriter_effect("HIYA! This is me trying out the typewriter effect...")
 typing_effect("pretend this is the entire rest of the code and everything is finished lol...")
+
